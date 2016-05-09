@@ -6,81 +6,43 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/14 19:22:05 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/04/14 19:43:06 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/09 23:01:48 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "MutantStack.hpp"
 #include <iostream>
-#include <stack>
-#include <list>
+#include <fstream>
+#include <string>
+#include "PolishReverseCalculator.hpp"
 
-int main()
-{
-	std::cout << "####### Mutant #######" << std::endl;
-	{
-		MutantStack<int> mstack;
+#define BUF_SIZE 4000
 
-		mstack.push(5);
-		mstack.push(17);
+int main(int argc, char **argv) {
+	std::ifstream file;
+	std::string contents;
+	char buf[BUF_SIZE];
+	std::size_t pos;
 
-		std::cout << mstack.top() << std::endl;
+	if (argc < 2) { std::cerr << "No file given" << std::endl; return 1; } // FIXME
+	std::string filename(argv[1]);
+	if (argc > 2) { std::cerr << "Usage: ./avm [FILE]" << std::endl; return 1; }
+	if (filename.size() == 0) { std::cerr << "Empty filename" << std::endl; return 1; }
 
-		mstack.pop();
+	file.open(filename, std::ifstream::in);
+	if (file.is_open() == false) { std::cerr << "Could not open " << filename << std::endl; return 1; }
 
-		std::cout << mstack.size() << std::endl;
+	while (file.get(buf, BUF_SIZE, 0)) { contents.append(buf); }
+	file.close();
 
-		mstack.push(3);
-		mstack.push(5);
-		mstack.push(737);
-
-		//[...]
-
-		mstack.push(0);
-
-		MutantStack<int>::iterator it = mstack.begin();
-		MutantStack<int>::iterator ite = mstack.end();
-
-		++it;
-		--it;
-		while (it != ite) {
-			std::cout << *it << std::endl;
-			++it;
-		}
-		std::stack<int> s(mstack);
+	std::string line;
+	PolishReverseCalculator calc;
+	while ((pos = contents.find('\n')) != std::string::npos) {
+		line = contents.substr(0, pos);
+		contents.erase(0, pos+1);
+		if (calc.call(line) == false) return 0;
 	}
-	std::cout << "######## List ########" << std::endl;
-	{
-		std::list<int> mstack;
-
-		mstack.push_back(5);
-		mstack.push_back(17);
-
-		std::cout << mstack.back() << std::endl;
-
-		mstack.pop_back();
-
-		std::cout << mstack.size() << std::endl;
-
-		mstack.push_back(3);
-		mstack.push_back(5);
-		mstack.push_back(737);
-
-		//[...]
-
-		mstack.push_back(0);
-
-		std::list<int>::iterator it = mstack.begin();
-		std::list<int>::iterator ite = mstack.end();
-
-		++it;
-		--it;
-		while (it != ite) {
-			std::cout << *it << std::endl;
-			++it;
-		}
-		std::stack<int, std::list<int> > s(mstack);
+	if (calc.call(contents) != false) {
+		std::cerr << "Error: No exit before EOF" << std::endl;
 	}
-	std::cout << "######################" << std::endl;
 	return 0;
 }

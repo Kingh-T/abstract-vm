@@ -6,13 +6,13 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2016/04/14 19:23:58 by tgauvrit         ###   ########.fr        #
+#    Updated: 2016/05/09 23:36:01 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME =				from_the_deep
+NAME =				avm
 
-CC =				clang++
+CC =				clang++ -std=c++11
 
 FLAGS =				-Wall -Werror -Wextra
 
@@ -23,7 +23,7 @@ SRC_DIR =			./
 COMPILED_DIR_NAME =	compiled
 COMPILED_DIR =		./$(COMPILED_DIR_NAME)/
 
-FILENAMES =			main
+FILENAMES =			main AbstractVM Operand OperandFactory PolishReverseCalculator
 
 COMPILED_PATHS :=	$(addsuffix .o,$(FILENAMES))
 COMPILED_PATHS :=	$(addprefix $(COMPILED_DIR),$(COMPILED_PATHS))
