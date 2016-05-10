@@ -6,15 +6,15 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 13:10:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 13:40:45 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 16:14:51 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PolishReverseCalculator.hpp"
 
-PolishReverseCalculator::PolishReverseCalculator( void ) {}
+PolishReverseCalculator::PolishReverseCalculator( void ) : verbose(false), cont_on_error(false) {}
 
-PolishReverseCalculator::PolishReverseCalculator( PolishReverseCalculator const & obj ) { *this = obj; }
+PolishReverseCalculator::PolishReverseCalculator( PolishReverseCalculator const & obj ) : verbose(false), cont_on_error(false) { *this = obj; }
 
 PolishReverseCalculator::~PolishReverseCalculator( void ) {
 	IterStack<IOperand const*>::iterator i;
@@ -36,8 +36,8 @@ bool PolishReverseCalculator::call(std::string cmd) {
 	try {
 		if (cmd.find(';') != std::string::npos) cmd.erase(cmd.find(';'), std::string::npos);
 		if (cmd.find_first_not_of(" \t") != 0) cmd.erase(0, cmd.find_first_not_of(" \t"));
-		while (cmd.find_last_of(" \t") == cmd.size()-1) cmd.pop_back();
-		if (cmd == "") return true;
+		while (cmd.size() != 0 && cmd.find_last_of(" \t") == cmd.size()-1) cmd.pop_back();
+		if (cmd.size() == 0) return true;
 		else if (cmd == "exit") return false;
 		else if (cmd == "pop") { this->pop(); }
 		else if (cmd == "dump") { this->dump(); }
@@ -69,11 +69,14 @@ bool PolishReverseCalculator::call(std::string cmd) {
 				throw AbstractVM::AssertNotTrue();
 			delete lhs;
 		}
-		else throw AbstractVM::UnknownInstruction();
+		else {
+			if (this->verbose) std::cout << "Error: Unknown instruction: " << cmd << std::endl;
+			else throw AbstractVM::UnknownInstruction();
+		}
 		return true;
 	} catch (std::exception & e) {
 		std::cerr << "Error: " << e.what() << std::endl;
-		return false;
+		return this->cont_on_error;
 	}
 }
 void PolishReverseCalculator::push(std::string val) {
@@ -91,7 +94,7 @@ void PolishReverseCalculator::push(std::string val) {
 	unsigned int open_p = val.find('(');
 	std::string type_string = val.substr(0, open_p);
 	val.erase(val.begin(), val.begin()+open_p+1);
-	std::cout << "Pushing " << type_string << ' ' << val << std::endl; // DEBUG
+	if (this->verbose) std::cout << "Pushing " << type_string << ' ' << val << std::endl; // DEBUG
 	for (int i = Int8; i <= Double; i++ ) {
 		if (type_string == names[i]) {
 			this->stack.push(factory.createOperand(static_cast<eOperandType>(i), val));

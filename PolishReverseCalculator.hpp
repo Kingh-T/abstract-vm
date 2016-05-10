@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 13:10:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 13:07:03 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 16:14:37 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ public:
 	void dump(void);
 	void print(void);
 
+	bool verbose;
+	bool cont_on_error;
 private:
 	IterStack<IOperand const*> stack;
 	OperandFactory factory;

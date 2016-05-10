@@ -6,11 +6,13 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 21:04:14 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 12:38:44 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 15:46:20 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "OperandFactory.hpp"
+#include <iostream>
+#include <cerrno>
 
 OperandFactory::OperandFactory( void ) {}
 OperandFactory::OperandFactory( OperandFactory const & obj ) { static_cast<void>(obj); }
@@ -44,7 +46,8 @@ IOperand const * OperandFactory::createOperand( eOperandType type, std::string c
 	try {
 		IOPFP func = creators[type];
 		created = (this->*func)(value);
-	} catch(std::exception) {
+	} catch(std::exception & e) {
+		// std::cout << errno << ": " << strerror(errno) << std::endl << e.what() << std::endl;
 		throw AbstractVM::InvalidValue();
 	}
 	return created;
