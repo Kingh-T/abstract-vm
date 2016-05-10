@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 13:10:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 19:05:01 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 19:14:52 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ bool PolishReverseCalculator::call(std::string cmd) {
 			IOperand const * rhs = this->stack.top();
 			if (lhs->getType() != rhs->getType() || lhs->toString() != rhs->toString())
 				throw AbstractVM::AssertNotTrue();
+			else if (this->verbose) std::cout << "Assert passed: " << lhs->toString() << " == " << rhs->toString() << std::endl;
 			delete lhs;
 		}
 		else {

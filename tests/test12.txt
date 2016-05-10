@@ -7,8 +7,8 @@ add
 add
 add
 dump
-push int8(75)
 push int8(-75)
+push int8(75)
 sub
 dump
 exit
