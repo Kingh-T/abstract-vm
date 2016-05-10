@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 13:10:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 16:14:51 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 19:05:01 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ PolishReverseCalculator & PolishReverseCalculator::operator=( PolishReverseCalcu
 
 bool PolishReverseCalculator::call(std::string cmd) {
 	static const std::vector<std::string> ops = { "add", "sub", "mul", "div", "mod" };
+	static std::string names[] = { "int8", "int16", "int32", "float", "double" };
 	try {
 		if (cmd.find(';') != std::string::npos) cmd.erase(cmd.find(';'), std::string::npos);
 		if (cmd.find_first_not_of(" \t") != 0) cmd.erase(0, cmd.find_first_not_of(" \t"));
@@ -50,6 +51,7 @@ bool PolishReverseCalculator::call(std::string cmd) {
 			IOperand const * lhs = this->stack.top();
 			this->stack.pop();
 			IOperand const * created = nullptr;
+			if (this->verbose) std::cout << "Operation: " << cmd << ' ' << names[lhs->getType()] << '(' << lhs->toString() << ") " << names[rhs->getType()] << '(' << rhs->toString() << ')' << std::endl;
 			if (cmd == "add") created = *lhs + *rhs;
 			else if (cmd == "sub") created = *lhs - *rhs;
 			else if (cmd == "mul") created = *lhs * *rhs;
@@ -80,13 +82,7 @@ bool PolishReverseCalculator::call(std::string cmd) {
 	}
 }
 void PolishReverseCalculator::push(std::string val) {
-	static std::string names[] = {
-		std::string("int8"),
-		std::string("int16"),
-		std::string("int32"),
-		std::string("float"),
-		std::string("double")
-	};
+	static std::string names[] = { "int8", "int16", "int32", "float", "double" };
 	if (val.size() < 4) throw AbstractVM::InvalidValue();
 	if (val.find('(') == std::string::npos) throw AbstractVM::InvalidValue();
 	if (val.back() != ')') throw AbstractVM::InvalidValue();
@@ -94,7 +90,7 @@ void PolishReverseCalculator::push(std::string val) {
 	unsigned int open_p = val.find('(');
 	std::string type_string = val.substr(0, open_p);
 	val.erase(val.begin(), val.begin()+open_p+1);
-	if (this->verbose) std::cout << "Pushing " << type_string << ' ' << val << std::endl; // DEBUG
+	if (this->verbose) std::cout << "Pushing " << type_string << '(' << val << ')' << std::endl; // DEBUG
 	for (int i = Int8; i <= Double; i++ ) {
 		if (type_string == names[i]) {
 			this->stack.push(factory.createOperand(static_cast<eOperandType>(i), val));
