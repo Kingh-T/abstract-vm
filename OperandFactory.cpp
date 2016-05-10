@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 21:04:14 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/09 23:00:36 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 12:38:44 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ IOperand const * OperandFactory::createOperand( eOperandType type, std::string c
 	IOperand const * created = nullptr;
 	try {
 		IOPFP func = creators[type];
-		(this->*func)(value);
+		created = (this->*func)(value);
 	} catch(std::exception) {
 		throw AbstractVM::InvalidValue();
 	}

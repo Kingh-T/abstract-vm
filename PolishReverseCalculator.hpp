@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 13:10:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/09 23:06:25 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 13:07:03 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <string>
 # include <iostream>
 # include <sstream>
+# include <vector>
+# include <algorithm>
 
 class PolishReverseCalculator {
 public:

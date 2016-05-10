@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 18:35:43 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/09 19:49:14 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 13:39:20 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,3 +17,6 @@ char const * AbstractVM::PopOnEmpty::what( void )   const _NOEXCEPT { return "Ca
 char const * AbstractVM::InvalidValue::what( void ) const _NOEXCEPT { return "Instructions contain invalid value"; }
 char const * AbstractVM::PrintNotInt8::what( void ) const _NOEXCEPT { return "Cannot print; top value not 8-bit integer"; }
 char const * AbstractVM::UnknownInstruction::what( void ) const _NOEXCEPT { return "Unknown instruction"; }
+char const * AbstractVM::UnknownOperation::what( void ) const _NOEXCEPT { return "Unknown operation"; }
+char const * AbstractVM::NotEnoughValues::what( void ) const _NOEXCEPT { return "Not enough values in stack for operation"; }
+char const * AbstractVM::AssertNotTrue::what( void ) const _NOEXCEPT { return "Assert evaluated to false"; }

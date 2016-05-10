@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 13:10:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/09 22:59:09 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 13:40:45 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ PolishReverseCalculator::PolishReverseCalculator( PolishReverseCalculator const 
 PolishReverseCalculator::~PolishReverseCalculator( void ) {
 	IterStack<IOperand const*>::iterator i;
 	IterStack<IOperand const*>::iterator end = this->stack.end();
-	for (i = this->stack.begin(); i != end; i++) { delete &(*i); }
+	for (i = this->stack.begin(); i != end; i++) { delete *i; }
 }
 
 PolishReverseCalculator & PolishReverseCalculator::operator=( PolishReverseCalculator const & rhs ) {
@@ -32,12 +32,43 @@ PolishReverseCalculator & PolishReverseCalculator::operator=( PolishReverseCalcu
 }
 
 bool PolishReverseCalculator::call(std::string cmd) {
+	static const std::vector<std::string> ops = { "add", "sub", "mul", "div", "mod" };
 	try {
-		if (cmd == "exit") return false;
+		if (cmd.find(';') != std::string::npos) cmd.erase(cmd.find(';'), std::string::npos);
+		if (cmd.find_first_not_of(" \t") != 0) cmd.erase(0, cmd.find_first_not_of(" \t"));
+		while (cmd.find_last_of(" \t") == cmd.size()-1) cmd.pop_back();
+		if (cmd == "") return true;
+		else if (cmd == "exit") return false;
 		else if (cmd == "pop") { this->pop(); }
 		else if (cmd == "dump") { this->dump(); }
 		else if (cmd == "print") { this->print(); }
 		else if (cmd.substr(0,5) == "push ") { this->push(cmd.substr(5,std::string::npos)); }
+		else if (std::find(ops.begin(), ops.end(), cmd) != ops.end()) {
+			if (this->stack.size() < 2) throw AbstractVM::NotEnoughValues();
+			IOperand const * rhs = this->stack.top();
+			this->stack.pop();
+			IOperand const * lhs = this->stack.top();
+			this->stack.pop();
+			IOperand const * created = nullptr;
+			if (cmd == "add") created = *lhs + *rhs;
+			else if (cmd == "sub") created = *lhs - *rhs;
+			else if (cmd == "mul") created = *lhs * *rhs;
+			else if (cmd == "div") created = *lhs / *rhs;
+			else if (cmd == "mod") created = *lhs % *rhs;
+			else throw AbstractVM::UnknownOperation();
+			this->stack.push(created);
+			delete lhs;
+			delete rhs;
+		}
+		else if (cmd.substr(0,7) == "assert ") {
+			this->push(cmd.substr(7,std::string::npos));
+			IOperand const * lhs = this->stack.top();
+			this->stack.pop();
+			IOperand const * rhs = this->stack.top();
+			if (lhs->getType() != rhs->getType() || lhs->toString() != rhs->toString())
+				throw AbstractVM::AssertNotTrue();
+			delete lhs;
+		}
 		else throw AbstractVM::UnknownInstruction();
 		return true;
 	} catch (std::exception & e) {
@@ -56,13 +87,14 @@ void PolishReverseCalculator::push(std::string val) {
 	if (val.size() < 4) throw AbstractVM::InvalidValue();
 	if (val.find('(') == std::string::npos) throw AbstractVM::InvalidValue();
 	if (val.back() != ')') throw AbstractVM::InvalidValue();
+	val.pop_back();
 	unsigned int open_p = val.find('(');
 	std::string type_string = val.substr(0, open_p);
-	std::string value_string = val.substr(open_p+1, val.size()-(open_p+1));
-	std::cout << "Pushing " << type_string << ' ' << value_string << std::endl; // DEBUG
+	val.erase(val.begin(), val.begin()+open_p+1);
+	std::cout << "Pushing " << type_string << ' ' << val << std::endl; // DEBUG
 	for (int i = Int8; i <= Double; i++ ) {
 		if (type_string == names[i]) {
-			this->stack.push(factory.createOperand(static_cast<eOperandType>(i), value_string));
+			this->stack.push(factory.createOperand(static_cast<eOperandType>(i), val));
 			return;
 		}
 	}
@@ -70,6 +102,7 @@ void PolishReverseCalculator::push(std::string val) {
 }
 void PolishReverseCalculator::pop(void) {
 	if (this->stack.size() < 1) throw AbstractVM::PopOnEmpty();
+	delete this->stack.top();
 	this->stack.pop();
 }
 void PolishReverseCalculator::dump(void) {

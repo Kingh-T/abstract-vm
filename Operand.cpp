@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 23:33:34 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/09 23:35:50 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/10 12:44:43 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ template<class T> Operand<T>::Operand( Operand<T> const & obj ) { *this = obj; }
 template<class T> Operand<T>::~Operand( void ) {}
 template<class T> Operand<T> & Operand<T>::operator=( Operand<T> const & rhs ) { this->_value = rhs._value; return *this; }
 
-template<class T> Operand<T>::Operand( T value ) { this->_value = value; }
+template<class T> Operand<T>::Operand( T value ) { this->_value = std::to_string(value); }
 template<class T> Operand<T>::Operand( std::string str ) { this->_value = std::to_string(static_cast<T>(stod(str))); }
 
 template<class T> IOperand const * Operand<T>::operator+( IOperand const & rhs ) const {

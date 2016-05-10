@@ -6,7 +6,7 @@
 #    By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/11/20 16:35:37 by tgauvrit          #+#    #+#              #
-#    Updated: 2016/05/09 23:36:01 by tgauvrit         ###   ########.fr        #
+#    Updated: 2016/05/10 12:08:10 by tgauvrit         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME =				avm
 
 CC =				clang++ -std=c++11
 
-FLAGS =				-Wall -Werror -Wextra
+FLAGS =				-Wall -Werror -Wextra -g
 
 HEADERS =			-I ./
 
