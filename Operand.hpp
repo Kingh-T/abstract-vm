@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/14 19:21:27 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 12:49:41 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/11 12:11:37 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "IOperand.hpp"
 # include "AbstractVM.hpp"
 # include <string>
+# include <limits>
 
 // enum eOperandType {Int8, Int16, Int32, Float, Double};
 

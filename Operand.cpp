@@ -6,7 +6,7 @@
 /*   By: tgauvrit <tgauvrit@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/05/09 23:33:34 by tgauvrit          #+#    #+#             */
-/*   Updated: 2016/05/10 18:56:15 by tgauvrit         ###   ########.fr       */
+/*   Updated: 2016/05/11 12:31:20 by tgauvrit         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@ template<class T> void add_flow_check(T a, T b) {
 	if ((a < 0) == (b < 0)) {
 		if (a < 0 && sum > b) throw AbstractVM::Underflow();
 		else if (sum < b) throw AbstractVM::Overflow();
+	}
+}
+template<class T> void mul_flow_check(T a, T b) {
+	T max = std::numeric_limits<T>::max();
+	T abs_a = (a < 0 ? a * -1 : a);
+	T abs_b = (b < 0 ? b * -1 : b);
+	if (abs_a > max/abs_b) {
+		if ((a < 0) && (b < 0)) throw AbstractVM::Overflow();
+		else if ((a > 0) && (b > 0)) throw AbstractVM::Overflow();
+		else throw AbstractVM::Underflow();
 	}
 }
 
@@ -56,6 +66,7 @@ template<class T> IOperand const * Operand<T>::operator*( IOperand const & rhs )
 	if (this->getPrecision() < rhs.getPrecision()) return (rhs * *this);
 	T lhs_value = static_cast<T>(stod(this->_value));
 	T rhs_value = static_cast<T>(stod(rhs.toString()));
+	mul_flow_check<T>(lhs_value, rhs_value);
 	OperandFactory * factory = new OperandFactory();
 	IOperand const * ret_val = factory->createOperand(this->getType(), std::to_string(lhs_value * rhs_value));
 	delete factory;
